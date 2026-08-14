@@ -4,6 +4,7 @@ from flask_cors import CORS
 from config import Config
 from extensions import db, jwt, mail
 from routes.auth_routes import auth_bp
+from routes.employee_routes import employee_bp
 
 
 def create_app():
@@ -15,10 +16,9 @@ def create_app():
     db.init_app(app)
     jwt.init_app(app)
     mail.init_app(app)
-    from routes.auth_routes import auth_bp
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
-   
+    app.register_blueprint(employee_bp, url_prefix="/api")
 
     @app.route("/")
     def health_check():
