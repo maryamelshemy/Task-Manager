@@ -15,4 +15,4 @@ class EmployeeCategory(db.Model):
         db.UniqueConstraint("employee_id", "category_id"),
     )
 
-    employee = db.relationship("Employee", backref="category_links")
+    employee = db.relationship("Employee", back_populates="category_links")

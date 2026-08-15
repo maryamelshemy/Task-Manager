@@ -12,4 +12,4 @@ class ReportHistory(db.Model):
     generated_at = db.Column(db.DateTime, default=datetime.utcnow)
     report_data = db.Column(db.Text)
 
-    employee = db.relationship("Employee", backref="report_history")
+    employee = db.relationship("Employee", back_populates="report_history")

@@ -9,6 +9,6 @@ class Category(db.Model):
     description = db.Column(db.Text)
     created_by = db.Column(db.Integer, db.ForeignKey("Employee.employee_id"))
 
-    creator = db.relationship("Employee", foreign_keys=[created_by], backref="created_categories")
+    employee = db.relationship("Employee", back_populates="report_history")
     tasks = db.relationship("Task", backref="category", lazy=True)
     employee_links = db.relationship("EmployeeCategory", backref="category", lazy=True)

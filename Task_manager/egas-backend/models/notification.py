@@ -17,4 +17,4 @@ class Notification(db.Model):
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    employee = db.relationship("Employee", backref="notifications")
+    employee = db.relationship("Employee", back_populates="notifications")
