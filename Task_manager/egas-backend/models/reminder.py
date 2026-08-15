@@ -13,4 +13,4 @@ class Reminder(db.Model):
     message = db.Column(db.String(255))
     is_sent = db.Column(db.Boolean, default=False)
 
-   employee = db.relationship("Employee", back_populates="reminders")
+    employee = db.relationship("Employee", back_populates="reminders")
