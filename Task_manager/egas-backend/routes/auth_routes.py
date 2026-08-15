@@ -39,7 +39,8 @@ def login():
     if employee.status != "active":
         return jsonify({"error": "This account is inactive"}), 403
 
-    access_token = create_access_token(identity=employee.employee_id)
+    additional_claims = {"role_id": employee.role_id}
+    access_token = create_access_token(identity=employee.employee_id, additional_claims=additional_claims)
 
     return jsonify({
         "token": access_token,
