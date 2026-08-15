@@ -20,4 +20,4 @@ class Attendance(db.Model):
         db.UniqueConstraint("employee_id", "date"),
     )
 
-    employee = db.relationship("Employee", backref="attendance_records")
+    employee = db.relationship("Employee", back_populates="attendance_records")

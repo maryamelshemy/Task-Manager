@@ -24,8 +24,8 @@ class Task(db.Model):
     )
     completed_date = db.Column(db.DateTime, nullable=True)
 
-    assignee = db.relationship("Employee", foreign_keys=[assigned_to], backref="assigned_tasks")
-    assigner = db.relationship("Employee", foreign_keys=[assigned_by], backref="created_tasks")
+    assignee = db.relationship("Employee", foreign_keys=[assigned_to], back_populates="assigned_tasks")
+    assigner = db.relationship("Employee", foreign_keys=[assigned_by], back_populates="created_tasks")
     history = db.relationship("TaskHistory", backref="task", lazy=True)
     reminders = db.relationship("Reminder", backref="task", lazy=True)
     notifications = db.relationship("Notification", backref="task", lazy=True)

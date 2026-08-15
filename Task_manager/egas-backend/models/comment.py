@@ -12,4 +12,4 @@ class Comment(db.Model):
     comment_text = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    employee = db.relationship("Employee", backref="comments")
+   employee = db.relationship("Employee", back_populates="comments")

@@ -13,4 +13,4 @@ class TaskHistory(db.Model):
     new_status = db.Column(db.String(50))
     changed_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    changer = db.relationship("Employee", foreign_keys=[changed_by], backref="task_history_changes")
+    changer = db.relationship("Employee", foreign_keys=[changed_by], back_populates="task_history_changes")
