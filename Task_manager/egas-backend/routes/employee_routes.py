@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 
+from utils.decorators import login_required, manager_required
 from extensions import db
 from models.attendance import Attendance
 from models.category import Category
@@ -17,18 +18,21 @@ employee_bp = Blueprint("employee", __name__)
 
 
 @employee_bp.route("/employees", methods=["GET"])
+@login_required
 def get_employees():
     employees = Employee.query.order_by(Employee.employee_id).all()
     return jsonify([employee.to_dict() for employee in employees]), 200
 
 
 @employee_bp.route("/employees/<int:employee_id>", methods=["GET"])
+@login_required
 def get_employee(employee_id):
     employee = Employee.query.get_or_404(employee_id)
     return jsonify(employee.to_dict()), 200
 
 
 @employee_bp.route("/employees", methods=["POST"])
+@manager_required
 def create_employee():
     data = request.get_json(silent=True) or {}
 
@@ -57,6 +61,7 @@ def create_employee():
 
 
 @employee_bp.route("/employees/<int:employee_id>", methods=["PUT"])
+@manager_required
 def update_employee(employee_id):
     employee = Employee.query.get_or_404(employee_id)
     data = request.get_json(silent=True) or {}
@@ -73,6 +78,7 @@ def update_employee(employee_id):
 
 
 @employee_bp.route("/employees/<int:employee_id>", methods=["DELETE"])
+@manager_required
 def delete_employee(employee_id):
     employee = Employee.query.get_or_404(employee_id)
     db.session.delete(employee)
@@ -81,12 +87,14 @@ def delete_employee(employee_id):
 
 
 @employee_bp.route("/roles", methods=["GET"])
+@login_required
 def get_roles():
     roles = Role.query.order_by(Role.role_id).all()
     return jsonify([{"role_id": role.role_id, "role_name": role.role_name} for role in roles]), 200
 
 
 @employee_bp.route("/categories", methods=["GET"])
+@login_required
 def get_categories():
     categories = Category.query.order_by(Category.category_id).all()
     return jsonify([
@@ -101,6 +109,7 @@ def get_categories():
 
 
 @employee_bp.route("/categories", methods=["POST"])
+@manager_required
 def create_category():
     data = request.get_json(silent=True) or {}
     category_name = data.get("category_name")
@@ -126,6 +135,7 @@ def create_category():
 
 
 @employee_bp.route("/employee-categories", methods=["GET"])
+@login_required
 def get_employee_categories():
     items = EmployeeCategory.query.order_by(EmployeeCategory.employee_category_id).all()
     return jsonify([
@@ -140,6 +150,7 @@ def get_employee_categories():
 
 
 @employee_bp.route("/employee-categories", methods=["POST"])
+@manager_required
 def create_employee_category():
     data = request.get_json(silent=True) or {}
     employee_id = data.get("employee_id")
@@ -163,6 +174,7 @@ def create_employee_category():
 
 
 @employee_bp.route("/tasks", methods=["GET"])
+@login_required
 def get_tasks():
     tasks = Task.query.order_by(Task.task_id).all()
     return jsonify([
@@ -184,6 +196,7 @@ def get_tasks():
 
 
 @employee_bp.route("/tasks", methods=["POST"])
+@login_required
 def create_task():
     data = request.get_json(silent=True) or {}
     required_fields = ["title", "category_id", "assigned_to", "assigned_by"]
@@ -217,6 +230,7 @@ def create_task():
 
 
 @employee_bp.route("/tasks/<int:task_id>", methods=["PUT"])
+@login_required
 def update_task(task_id):
     task = Task.query.get_or_404(task_id)
     data = request.get_json(silent=True) or {}
@@ -241,6 +255,7 @@ def update_task(task_id):
 
 
 @employee_bp.route("/tasks/<int:task_id>", methods=["DELETE"])
+@manager_required
 def delete_task(task_id):
     task = Task.query.get_or_404(task_id)
     db.session.delete(task)
@@ -249,6 +264,7 @@ def delete_task(task_id):
 
 
 @employee_bp.route("/task-history", methods=["GET"])
+@login_required
 def get_task_history():
     records = TaskHistory.query.order_by(TaskHistory.history_id).all()
     return jsonify([
@@ -265,6 +281,7 @@ def get_task_history():
 
 
 @employee_bp.route("/task-history", methods=["POST"])
+@login_required
 def create_task_history():
     data = request.get_json(silent=True) or {}
     if not data.get("task_id") or not data.get("changed_by"):
@@ -289,6 +306,7 @@ def create_task_history():
 
 
 @employee_bp.route("/attendance", methods=["GET"])
+@login_required
 def get_attendance():
     records = Attendance.query.order_by(Attendance.attendance_id).all()
     return jsonify([
@@ -305,6 +323,7 @@ def get_attendance():
 
 
 @employee_bp.route("/attendance", methods=["POST"])
+@manager_required
 def create_attendance():
     data = request.get_json(silent=True) or {}
     if not data.get("employee_id") or not data.get("date"):
@@ -330,6 +349,7 @@ def create_attendance():
 
 
 @employee_bp.route("/reminders", methods=["GET"])
+@login_required
 def get_reminders():
     reminders = Reminder.query.order_by(Reminder.reminder_id).all()
     return jsonify([
@@ -346,6 +366,7 @@ def get_reminders():
 
 
 @employee_bp.route("/notifications", methods=["GET"])
+@login_required
 def get_notifications():
     notifications = Notification.query.order_by(Notification.notification_id).all()
     return jsonify([
@@ -363,6 +384,7 @@ def get_notifications():
 
 
 @employee_bp.route("/comments", methods=["GET"])
+@login_required
 def get_comments():
     comments = Comment.query.order_by(Comment.comment_id).all()
     return jsonify([
@@ -378,6 +400,7 @@ def get_comments():
 
 
 @employee_bp.route("/reports", methods=["GET"])
+@login_required
 def get_reports():
     reports = ReportHistory.query.order_by(ReportHistory.report_id).all()
     return jsonify([
@@ -393,6 +416,7 @@ def get_reports():
 
 
 @employee_bp.route("/reports", methods=["POST"])
+@manager_required
 def create_report():
     data = request.get_json(silent=True) or {}
     if not data.get("employee_id") or not data.get("report_type"):
